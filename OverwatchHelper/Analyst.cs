@@ -34,7 +34,7 @@ namespace OverwatchHelper
         public int minPixels = 100;
         public float minLinearness = 1.3f;
         public float minGappiness = 1.4f;
-        public int headOffset = 4;
+        public int headOffset = 0;
 
         public Image<Gray, Byte> hsvFilter(Image<Bgr, Byte> input){
 
@@ -152,12 +152,12 @@ namespace OverwatchHelper
             return new Point(input.top.X, input.top.Y - headOffset);//todo improve this?
         }
 
-        private double distance(Point a, Point b)
+        public double distance(Point a, Point b)
         {
             return Math.Sqrt(( a.X - b.X ) * (a.X - b.X ) + (a.Y - b.Y ) * (a.Y - b.Y));
         }
 
-        private Point findTarget(Point center)
+        public Point findTarget(Point center)
         {
             List<Point> heads = silhouettes.Select(s => findHead(s)).ToList();//find head in each silhouette
             return heads.Aggregate((c, d) => distance(c, center) < distance(d, center) ? c : d);//find the closest head to the center of the screen

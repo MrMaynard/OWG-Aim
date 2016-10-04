@@ -85,6 +85,8 @@ namespace OverwatchHelper
         private MouseMover mover;
         private Hooker hooker;
 
+        public Point screenSize = new Point(1920, 1080);
+
         Thread captureThread;
         Thread hookerThread;
 
@@ -93,23 +95,23 @@ namespace OverwatchHelper
         public GUI()
         {
             InitializeComponent();
-            initialize();
             setupTable();
+            initialize();
             start();
         }
 
         private void initialize()
         {
             analyst = new Analyst();
-            mover = new MouseMover(new Point(1920, 1080), 8.0f);
-            capturer = new Capturer(analyst, mover, path, 1000);
+            mover = new MouseMover(screenSize, 8.0f);
+            capturer = new Capturer(analyst, mover, screenSize, 500.0, path, 1000);
             hooker = new Hooker(capturer, Keys.C);
 
             captureThread = new Thread(() => { capturer.run(); }, 1000000000);
             hookerThread = new Thread(() => { hooker.run(); });
             
             aimBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            aimBox.SelectedText = "2";
+            aimBox.SelectedIndex = aimBox.Items.IndexOf("C");
         }
 
         private void start()
@@ -178,7 +180,9 @@ namespace OverwatchHelper
         {
             capturer.enabled = false;
             captureThread.Abort();
-            Application.Exit();
+            hooker.running = false;
+            hookerThread.Abort();
+            Environment.Exit(0);
         }
 
         private void moveButton_Click(object sender, EventArgs e)
@@ -206,6 +210,29 @@ namespace OverwatchHelper
         private void aimBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             hooker.aimKey = keyTable[(string)aimBox.SelectedItem];
+        }
+
+        private void sensBox_TextChanged(object sender, EventArgs e)
+        {
+            mover.update(Single.Parse(sensBox.Text));
+        }
+
+        private void windowBox_TextChanged(object sender, EventArgs e)
+        {
+            capturer.window = Double.Parse(windowBox.Text);
+        }
+
+        private void liveButton_Click(object sender, EventArgs e)
+        {
+            if (capturer.live)
+            {
+                liveButton.Text = "Start capturing";
+            }
+            else
+            {
+                liveButton.Text = "Stop capturing";
+            }
+            capturer.live = !capturer.live;
         }
     }
 }

@@ -38,7 +38,6 @@ namespace OverwatchHelper
             running = true;
             while (running)
             {
-
                 capturer.enabled = isKeyDown(aimKey);
 
                 System.Threading.Thread.Sleep(delay);
