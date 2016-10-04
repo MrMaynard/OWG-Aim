@@ -19,32 +19,41 @@ namespace OverwatchHelper
         public bool enabled = false;
         public bool running = false;
 
+        public bool killMode = false;
+        public bool saveMode = false;
+        public bool predictionMode = false;
+
         public Bitmap view;
 
         private Analyst analyst;
+        MouseMover mouseMover;
 
-        public Capturer(Analyst analyst)
+        public Capturer(Analyst analyst, MouseMover mouseMover)
         {
             this.analyst = analyst;
+            this.mouseMover = mouseMover;
         }
 
-        public Capturer(Analyst analyst, int delay)
+        public Capturer(Analyst analyst, MouseMover mouseMover, int delay)
         {
             this.analyst = analyst;
             this.delay = delay;
+            this.mouseMover = mouseMover;
         }
 
-        public Capturer(Analyst analyst, string path)
+        public Capturer(Analyst analyst, MouseMover mouseMover, string path)
         {
             this.analyst = analyst;
             this.path = path;
+            this.mouseMover = mouseMover;
         }
 
-        public Capturer(Analyst analyst, string path, int delay)
+        public Capturer(Analyst analyst, MouseMover mouseMover, string path, int delay)
         {
             this.analyst = analyst;
             this.path = path;
             this.delay = delay;
+            this.mouseMover = mouseMover;
         }
 
         public void reset()
@@ -52,7 +61,7 @@ namespace OverwatchHelper
             this.counter = 0;
         }
 
-        public void run(bool saveMode)
+        public void run()
         {
             running = true;
             while (running)
@@ -70,6 +79,18 @@ namespace OverwatchHelper
                 {
                     view.Save(path + counter + ".bmp");
                     counter++;
+                }
+
+                if (predictionMode)
+                {
+                    //todo
+                }
+
+                //todo acquire target.
+
+                if (killMode)
+                {
+                    mouseMover.shoot();
                 }
 
                 analyst.findSilhouettes(

@@ -35,6 +35,10 @@
             this.moveButton = new System.Windows.Forms.Button();
             this.sensButton = new System.Windows.Forms.Button();
             this.sensBox = new System.Windows.Forms.TextBox();
+            this.shootBox = new System.Windows.Forms.CheckBox();
+            this.predictionBox = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.aimBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // captureButton
@@ -99,11 +103,107 @@
             this.sensBox.TabIndex = 6;
             this.sensBox.Text = "8.0";
             // 
+            // shootBox
+            // 
+            this.shootBox.AutoSize = true;
+            this.shootBox.Location = new System.Drawing.Point(12, 144);
+            this.shootBox.Name = "shootBox";
+            this.shootBox.Size = new System.Drawing.Size(83, 17);
+            this.shootBox.TabIndex = 7;
+            this.shootBox.Text = "Shoot mode";
+            this.shootBox.UseVisualStyleBackColor = true;
+            this.shootBox.CheckedChanged += new System.EventHandler(this.shootBox_CheckedChanged);
+            // 
+            // predictionBox
+            // 
+            this.predictionBox.AutoSize = true;
+            this.predictionBox.Location = new System.Drawing.Point(12, 167);
+            this.predictionBox.Name = "predictionBox";
+            this.predictionBox.Size = new System.Drawing.Size(103, 17);
+            this.predictionBox.TabIndex = 8;
+            this.predictionBox.Text = "Prediction Mode";
+            this.predictionBox.UseVisualStyleBackColor = true;
+            this.predictionBox.CheckedChanged += new System.EventHandler(this.predictionBox_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 125);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(47, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Aim key:";
+            // 
+            // aimBox
+            // 
+            this.aimBox.FormattingEnabled = true;
+            this.aimBox.Items.AddRange(new object[] {
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "0",
+            ";",
+            "\\",
+            " ",
+            "\"",
+            ".",
+            "|",
+            "-",
+            ",",
+            "?",
+            "+",
+            "[",
+            "]",
+            "MB1",
+            "MB2",
+            "MB3"});
+            this.aimBox.Location = new System.Drawing.Point(66, 122);
+            this.aimBox.Name = "aimBox";
+            this.aimBox.Size = new System.Drawing.Size(66, 21);
+            this.aimBox.TabIndex = 10;
+            this.aimBox.SelectedIndexChanged += new System.EventHandler(this.aimBox_SelectedIndexChanged);
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(386, 288);
+            this.Controls.Add(this.aimBox);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.predictionBox);
+            this.Controls.Add(this.shootBox);
             this.Controls.Add(this.sensBox);
             this.Controls.Add(this.sensButton);
             this.Controls.Add(this.moveButton);
@@ -128,6 +228,10 @@
         private System.Windows.Forms.Button moveButton;
         private System.Windows.Forms.Button sensButton;
         private System.Windows.Forms.TextBox sensBox;
+        private System.Windows.Forms.CheckBox shootBox;
+        private System.Windows.Forms.CheckBox predictionBox;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox aimBox;
     }
 }
 

@@ -19,11 +19,74 @@ namespace OverwatchHelper
     public partial class GUI : Form
     {
 
+        private Dictionary<string, Keys> keyTable = new Dictionary<string, Keys>();
+        private void setupTable()
+        {
+            //standard letters:
+            keyTable["A"] = Keys.A;
+            keyTable["B"] = Keys.B;
+            keyTable["C"] = Keys.C;
+            keyTable["D"] = Keys.D;
+            keyTable["E"] = Keys.F;
+            keyTable["G"] = Keys.H;
+            keyTable["I"] = Keys.J;
+            keyTable["K"] = Keys.K;
+            keyTable["L"] = Keys.L;
+            keyTable["M"] = Keys.M;
+            keyTable["N"] = Keys.N;
+            keyTable["O"] = Keys.O;
+            keyTable["P"] = Keys.P;
+            keyTable["Q"] = Keys.Q;
+            keyTable["R"] = Keys.R;
+            keyTable["S"] = Keys.S;
+            keyTable["T"] = Keys.T;
+            keyTable["U"] = Keys.U;
+            keyTable["V"] = Keys.V;
+            keyTable["W"] = Keys.W;
+            keyTable["X"] = Keys.X;
+            keyTable["Y"] = Keys.Y;
+            keyTable["Z"] = Keys.Z;
+
+            //numbers:
+            keyTable["1"] = Keys.D1;
+            keyTable["2"] = Keys.D2;
+            keyTable["3"] = Keys.D3;
+            keyTable["4"] = Keys.D4;
+            keyTable["5"] = Keys.D5;
+            keyTable["6"] = Keys.D6;
+            keyTable["7"] = Keys.D7;
+            keyTable["8"] = Keys.D8;
+            keyTable["9"] = Keys.D9;
+            keyTable["0"] = Keys.D0;
+
+            //symbols:
+            keyTable[";"] = Keys.OemSemicolon;
+            keyTable["\\"] = Keys.OemBackslash;
+            keyTable[" "] = Keys.Space;
+            keyTable["\""] = Keys.OemQuotes;
+            keyTable["."] = Keys.OemPeriod;
+            keyTable["|"] = Keys.OemPipe;
+            keyTable["-"] = Keys.OemMinus;
+            keyTable[","] = Keys.Oemcomma;
+            keyTable["?"] = Keys.OemQuestion;
+            keyTable["+"] = Keys.Oemplus;
+            keyTable["["] = Keys.OemOpenBrackets;
+            keyTable["]"] = Keys.OemCloseBrackets;
+
+            //mouse buttons:
+            keyTable["MB1"] = Keys.LButton;
+            keyTable["MB2"] = Keys.RButton;
+            keyTable["MB3"] = Keys.MButton;
+
+        }
+
         private Capturer capturer;
         private Analyst analyst;
         private MouseMover mover;
+        private Hooker hooker;
 
         Thread captureThread;
+        Thread hookerThread;
 
         string path = "C:\\Users\\Eric\\Desktop\\overwatch\\images\\";
 
@@ -31,24 +94,28 @@ namespace OverwatchHelper
         {
             InitializeComponent();
             initialize();
+            setupTable();
             start();
         }
 
-        Stopwatch stopwatch;
         private void initialize()
         {
-            stopwatch = Stopwatch.StartNew(); //creates and start the instance of Stopwatch
-            analyst = new Analyst(stopwatch);
-            capturer = new Capturer(analyst, path, 1000);
-            mover = new MouseMover(new Point(1920, 1080));
+            analyst = new Analyst();
+            mover = new MouseMover(new Point(1920, 1080), 8.0f);
+            capturer = new Capturer(analyst, mover, path, 1000);
+            hooker = new Hooker(capturer, Keys.C);
 
-            captureThread = new Thread(() => { capturer.run(true); }, 1000000000);
+            captureThread = new Thread(() => { capturer.run(); }, 1000000000);
+            hookerThread = new Thread(() => { hooker.run(); });
             
+            aimBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            aimBox.SelectedText = "2";
         }
 
         private void start()
         {
             captureThread.Start();
+            hookerThread.Start();
         }
 
         private void captureButton_Click(object sender, EventArgs e)
@@ -68,8 +135,6 @@ namespace OverwatchHelper
 
         private void debugButton_Click(object sender, EventArgs e)
         {
-
-            stopwatch.Restart();
             
             //interesting files: 31 57 58 60 62
             string debugpath = "C:\\Users\\Eric\\Desktop\\overwatch\\images\\testrun0\\58.bmp";
@@ -101,9 +166,6 @@ namespace OverwatchHelper
             //        CvInvoke.WaitKey(0);
                 
             //});
-
-            stopwatch.Stop();
-            Console.WriteLine("total:\t" + stopwatch.ElapsedMilliseconds);
             
         }
 
@@ -129,6 +191,21 @@ namespace OverwatchHelper
         private void sensButton_Click(object sender, EventArgs e)
         {
             mover.update(Single.Parse(sensBox.Text));
+        }
+
+        private void predictionBox_CheckedChanged(object sender, EventArgs e)
+        {
+            capturer.predictionMode = predictionBox.Checked;
+        }
+
+        private void shootBox_CheckedChanged(object sender, EventArgs e)
+        {
+            capturer.killMode = shootBox.Checked;
+        }
+
+        private void aimBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            hooker.aimKey = keyTable[(string)aimBox.SelectedItem];
         }
     }
 }

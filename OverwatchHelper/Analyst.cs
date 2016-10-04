@@ -36,12 +36,6 @@ namespace OverwatchHelper
         public float minGappiness = 1.4f;
         public int headOffset = 4;
 
-        Stopwatch stopwatch;
-        public Analyst(Stopwatch stopwatch)
-        {
-            this.stopwatch = stopwatch;
-        }
-
         public Image<Gray, Byte> hsvFilter(Image<Bgr, Byte> input){
 
             Image<Gray, Byte>[] results = new Image<Gray, Byte>[3];

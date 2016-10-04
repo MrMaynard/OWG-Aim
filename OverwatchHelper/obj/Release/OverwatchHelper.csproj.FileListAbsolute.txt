@@ -24,4 +24,3 @@ C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHel
 C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHelper\obj\Release\OverwatchHelper.csproj.GenerateResource.Cache
 C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHelper\obj\Release\OverwatchHelper.exe
 C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHelper\obj\Release\OverwatchHelper.pdb
-C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHelper\obj\Release\OverwatchHelper.csprojResolveAssemblyReference.cache
