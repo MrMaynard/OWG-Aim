@@ -996,7 +996,7 @@ namespace OverwatchHelper
         public float sensitivity = 8f;
 
         //constructor needs screen size
-        Point screenSize;
+        Point screenSize = new Point(1920, 1080);
         Random random;
         public MouseMover(Point screenSize, float sensitivity)
         {
@@ -1043,6 +1043,43 @@ namespace OverwatchHelper
             mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, X, Y, 0, 0);
         }
 
+        public void wfMove(int x, int y)
+        {
+            Point currentPos = Cursor.Position;
+            Cursor.Position = new Point(currentPos.X + x, currentPos.Y + y);
+        }
+
+        public void move(int x, int y)
+        {
+            x -= screenSize.X / 2;
+            y -= screenSize.Y / 2;
+
+            x = (int)((float)x / sensitivityMultiplier);
+            y = (int)((float)y / sensitivityMultiplier);
+
+            int bend = random.Next(6, 20);
+
+            newMove((x / 2) - bend, (y / 2) + bend);
+            System.Threading.Thread.Sleep(random.Next(2, 7));
+            newMove((x / 2) + bend, (y / 2) - bend);
+        }
+
+        public void newMove(int x, int y)
+        {
+            INPUT input = new INPUT();
+            input.type = InputType.MOUSE;
+            input.U.mi.mouseData = 0;
+            input.U.mi.time = 0;
+
+            input.U.mi.dwFlags = MOUSEEVENTF.MOVE;
+
+            input.U.mi.dx = x;
+            input.U.mi.dy = y;
+
+            INPUT[] send = { input };
+            SendInput(1, send, INPUT.Size);
+        }
+
         /*
          * 
          * The functions below are ripped from RcsManager.cs
@@ -1070,10 +1107,10 @@ namespace OverwatchHelper
             x = (int)((float)x / sensitivityMultiplier);
             y = (int)((float)y / sensitivityMultiplier);
 
-            if (random.Next(0, 100) < 50)
+            if (random.Next(0, 1) == 0)
                 x += modifier(true);
 
-            if (random.Next(0, 100) < 50)
+            if (random.Next(0, 1) == 0)
                 y += modifier(false);
 
             int bend = random.Next(2, 12);
@@ -1117,7 +1154,7 @@ namespace OverwatchHelper
             SendInput(1, inputs, INPUT.Size);
         }
 
-        void moveMouseBy(float x, float y)
+        public void moveMouseBy(float x, float y)
         {
             POINT p = currentPosition();
             moveMouseBy(x, y, p.x, p.y);

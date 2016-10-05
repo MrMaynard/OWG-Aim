@@ -17,23 +17,23 @@ namespace OverwatchHelper
 
         //hsv filter values:
         public int hueMin = 2;
-        public int hueMax = 5;
-        public int satMin = 150;
+        public int hueMax = 8;
+        public int satMin = 165;
         public int satMax = 256;
         public int valMin = 133;
         public int valMax = 256;
 
         //morphological operation values:
         public int erodeCycles = 0;
-        public int erodeCycles2 = 3;
-        public int dilateCycles = 6;
+        public int erodeCycles2 = 6;
+        public int dilateCycles = 13;
         public int mCycles = 1;
 
         //holder for silhouettes:
         public List<Silhouette> silhouettes = new List<Silhouette>();
-        public int minPixels = 100;
-        public float minLinearness = 1.3f;
-        public float minGappiness = 1.4f;
+        public int minPixels = 120;
+        public float minLinearness = 1f;
+        public float minGappiness = 1.3f;
         public int headOffset = 0;
 
         public Image<Gray, Byte> hsvFilter(Image<Bgr, Byte> input){
@@ -61,10 +61,12 @@ namespace OverwatchHelper
             return input;
         }
 
+        int numTargets = 0;
         public void findSilhouettes(Image<Gray, Byte> input){
 
             Image<Gray, Byte> fatInput = morphologicalOperations(input);
             List<Silhouette> silhouettes = new List<Silhouette>();
+            numTargets = 0;
 
             var inputSize = input.Size;
 
@@ -91,6 +93,7 @@ namespace OverwatchHelper
                 temp.centroid.Y = (int)(moment.M01 / moment.M00);
                 temp.centroid = temp.findTop();
                 silhouettes.Add(temp);
+                numTargets++;
             }
 
             ////recursive method:
@@ -159,6 +162,7 @@ namespace OverwatchHelper
 
         public Point findTarget(Point center)
         {
+            if (numTargets < 1) return new Point(Int32.MinValue, Int32.MinValue);
             List<Point> heads = silhouettes.Select(s => findHead(s)).ToList();//find head in each silhouette
             return heads.Aggregate((c, d) => distance(c, center) < distance(d, center) ? c : d);//find the closest head to the center of the screen
         }

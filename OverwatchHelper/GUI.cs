@@ -104,7 +104,7 @@ namespace OverwatchHelper
         {
             analyst = new Analyst();
             mover = new MouseMover(screenSize, 8.0f);
-            capturer = new Capturer(analyst, mover, screenSize, 500.0, path, 1000);
+            capturer = new Capturer(analyst, mover, screenSize, 5000.0, path, 30);
             hooker = new Hooker(capturer, Keys.C);
 
             captureThread = new Thread(() => { capturer.run(); }, 1000000000);
@@ -139,35 +139,37 @@ namespace OverwatchHelper
         {
             
             //interesting files: 31 57 58 60 62
-            string debugpath = "C:\\Users\\Eric\\Desktop\\overwatch\\images\\testrun0\\58.bmp";
+            string debugpath = "C:\\Users\\Eric\\Desktop\\overwatch\\images\\bot.bmp";
             //var debug =
                 analyst.findSilhouettes(
                     analyst.hsvFilter(
-                    new Image<Bgr, Byte>(CaptureScreen.GetDesktopImage())
+                    new Image<Bgr, Byte>(debugpath)
                     )
                     )
                     ;
-            //CvInvoke.Imshow("debug",debug);
-            //CvInvoke.WaitKey(0);
-            //return;
-            //analyst.silhouettes.ForEach(s => {
-            //    Image<Bgr, Byte> result = s.image.Convert<Bgr, Byte>();
-            //    var marker = new Bgr(0, 0, 255);
-            //    s.centroid.Y += 4;
-            //    //demo to show found top:
-            //    if (s.centroid.X != -1)
-            //    {
-            //        result[s.centroid.Y, s.centroid.X] = marker;
-            //        result[s.centroid.Y + 1, s.centroid.X] = marker;
-            //        result[s.centroid.Y - 1, s.centroid.X] = marker;
-            //        result[s.centroid.Y, s.centroid.X + 1] = marker;
-            //        result[s.centroid.Y, s.centroid.X - 1] = marker;
+                //CvInvoke.Imshow("debug", debug);
+                //CvInvoke.WaitKey(0);
+                //return;
+                analyst.silhouettes.ForEach(s =>
+                {
+                    Image<Bgr, Byte> result = s.image.Convert<Bgr, Byte>();
+                    var marker = new Bgr(0, 0, 255);
+                    s.centroid.Y += 4;
+                    //demo to show found top:
+                    if (s.centroid.X != -1)
+                    {
+                        result[s.centroid.Y, s.centroid.X] = marker;
+                        result[s.centroid.Y + 1, s.centroid.X] = marker;
+                        result[s.centroid.Y - 1, s.centroid.X] = marker;
+                        result[s.centroid.Y, s.centroid.X + 1] = marker;
+                        result[s.centroid.Y, s.centroid.X - 1] = marker;
 
-            //    }
-            //        CvInvoke.Imshow("Stats (C, L, G):\t" + s.count + ",\t" + s.linearness / s.count + ",\t" + s.gappiness / s.count, result);
-            //        CvInvoke.WaitKey(0);
-                
-            //});
+                    }
+                    CvInvoke.Imshow("Stats (C, L, G):\t" + s.count + ",\t" + s.linearness / s.count + ",\t" + s.gappiness / s.count, result);
+                    CvInvoke.WaitKey(0);
+
+                });
+                Console.WriteLine("done");
             
         }
 
@@ -189,7 +191,7 @@ namespace OverwatchHelper
         {
             int x = Int32.Parse(xBox.Text);
             int y = Int32.Parse(yBox.Text);
-            mover.moveMouse(x, y);
+            mover.moveMouseBy(x, y);
         }
 
         private void sensButton_Click(object sender, EventArgs e)
@@ -209,17 +211,39 @@ namespace OverwatchHelper
 
         private void aimBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            hooker.aimKey = keyTable[(string)aimBox.SelectedItem];
+            try
+            {
+                hooker.aimKey = keyTable[(string)aimBox.SelectedItem];
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         private void sensBox_TextChanged(object sender, EventArgs e)
         {
-            mover.update(Single.Parse(sensBox.Text));
+            try
+            {
+                mover.update(Single.Parse(sensBox.Text));
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
         }
 
         private void windowBox_TextChanged(object sender, EventArgs e)
         {
-            capturer.window = Double.Parse(windowBox.Text);
+            try
+            {
+                capturer.window = Double.Parse(windowBox.Text);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         private void liveButton_Click(object sender, EventArgs e)
@@ -233,6 +257,15 @@ namespace OverwatchHelper
                 liveButton.Text = "Stop capturing";
             }
             capturer.live = !capturer.live;
+        }
+
+        private void GUI_Closing(object sender, FormClosingEventArgs e)
+        {
+            capturer.enabled = false;
+            captureThread.Abort();
+            hooker.running = false;
+            hookerThread.Abort();
+            Environment.Exit(0);
         }
     }
 }

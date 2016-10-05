@@ -29,16 +29,22 @@ namespace OverwatchHelper
 
         private bool isKeyDown(Keys key)
         {
-            return Convert.ToInt32(GetAsyncKeyState(key)) == -32767;
+            return Convert.ToInt32(GetAsyncKeyState(key) & 0x8000) > 0;
         }
 
-        public int delay = 15;
+        public int delay = 5;
         public void run()
         {
             running = true;
             while (running)
             {
                 capturer.enabled = isKeyDown(aimKey);
+                //if (isKeyDown(aimKey))
+                //{
+                //    float move = (-1 / (8f * 0.116f)) * -0.0000001f;
+                //    capturer.mouseMover.newMove(10, 10);
+                //    System.Threading.Thread.Sleep(1000);
+                //}
 
                 System.Threading.Thread.Sleep(delay);
             }
