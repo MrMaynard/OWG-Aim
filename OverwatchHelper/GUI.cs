@@ -104,7 +104,7 @@ namespace OverwatchHelper
         {
             analyst = new Analyst();
             mover = new MouseMover(screenSize, 8.0f);
-            capturer = new Capturer(analyst, mover, screenSize, 5000.0, path, 30);
+            capturer = new Capturer(analyst, mover, screenSize, 500.0, path, 30);
             hooker = new Hooker(capturer, Keys.C);
 
             captureThread = new Thread(() => { capturer.run(); }, 1000000000);
@@ -118,6 +118,7 @@ namespace OverwatchHelper
         {
             captureThread.Start();
             hookerThread.Start();
+            contantBox.Text = "0.085";//debug
         }
 
         private void captureButton_Click(object sender, EventArgs e)
@@ -139,9 +140,9 @@ namespace OverwatchHelper
         {
             
             //interesting files: 31 57 58 60 62
-            string debugpath = "C:\\Users\\Eric\\Desktop\\overwatch\\images\\bot.bmp";
+            string debugpath = "C:\\Users\\Eric\\Desktop\\overwatch\\images\\testrun0\\56.bmp";
             //var debug =
-                analyst.findSilhouettes(
+               analyst.findSilhouettes(
                     analyst.hsvFilter(
                     new Image<Bgr, Byte>(debugpath)
                     )
@@ -165,7 +166,7 @@ namespace OverwatchHelper
                         result[s.centroid.Y, s.centroid.X - 1] = marker;
 
                     }
-                    CvInvoke.Imshow("Stats (C, L, G):\t" + s.count + ",\t" + s.linearness / s.count + ",\t" + s.gappiness / s.count, result);
+                    CvInvoke.Imshow("Stats (C, L, G):\t" + s.count + ",\t" + s.linearness + ",\t" + s.gappiness / s.count, result);
                     CvInvoke.WaitKey(0);
 
                 });
@@ -191,7 +192,7 @@ namespace OverwatchHelper
         {
             int x = Int32.Parse(xBox.Text);
             int y = Int32.Parse(yBox.Text);
-            mover.moveMouseBy(x, y);
+            mover.newMoveNoScale(x, y);
         }
 
         private void sensButton_Click(object sender, EventArgs e)
@@ -266,6 +267,19 @@ namespace OverwatchHelper
             hooker.running = false;
             hookerThread.Abort();
             Environment.Exit(0);
+        }
+
+        private void contantBox_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                mover.constant = Single.Parse(contantBox.Text);
+                mover.update(Single.Parse(sensBox.Text));
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }

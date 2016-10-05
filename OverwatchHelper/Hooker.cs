@@ -41,8 +41,8 @@ namespace OverwatchHelper
                 capturer.enabled = isKeyDown(aimKey);
                 //if (isKeyDown(aimKey))
                 //{
-                //    float move = (-1 / (8f * 0.116f)) * -0.0000001f;
-                //    capturer.mouseMover.newMove(10, 10);
+
+                //    capturer.mouseMover.newMove(1323, 272);
                 //    System.Threading.Thread.Sleep(1000);
                 //}
 

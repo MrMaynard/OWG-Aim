@@ -17,7 +17,7 @@ namespace OverwatchHelper
 
         //hsv filter values:
         public int hueMin = 2;
-        public int hueMax = 8;
+        public int hueMax = 6;
         public int satMin = 165;
         public int satMax = 256;
         public int valMin = 133;
@@ -31,9 +31,9 @@ namespace OverwatchHelper
 
         //holder for silhouettes:
         public List<Silhouette> silhouettes = new List<Silhouette>();
-        public int minPixels = 120;
-        public float minLinearness = 1f;
-        public float minGappiness = 1.3f;
+        public int minPixels = 10;
+        public float minLinearness = .5f;
+        public float minGappiness = 1.2f;
         public int headOffset = 0;
 
         public Image<Gray, Byte> hsvFilter(Image<Bgr, Byte> input){
@@ -85,7 +85,8 @@ namespace OverwatchHelper
                 Silhouette temp = new Silhouette(input.Copy(filter), 0);
                 temp.compute();
                 if (temp.count < minPixels) continue;
-                if (temp.linearness / temp.count < minLinearness) continue;
+                temp.linearness /= temp.count;
+                if (temp.linearness < minLinearness) continue;
                 if (temp.gappiness / temp.count < minGappiness) continue;
 
                 var moment = CvInvoke.Moments(contours[i], true);

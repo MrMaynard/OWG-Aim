@@ -992,7 +992,7 @@ namespace OverwatchHelper
         //end of pinvoke nightmare
 
         public float sensitivityMultiplier;
-        public const float constant = 0.116f;
+        public float constant = 0.085f;
         public float sensitivity = 8f;
 
         //constructor needs screen size
@@ -1066,6 +1066,33 @@ namespace OverwatchHelper
 
         public void newMove(int x, int y)
         {
+
+            x -= screenSize.X / 2;
+            y -= screenSize.Y / 2;
+
+            x = (int)((float)x / sensitivityMultiplier);
+            y = (int)((float)y / sensitivityMultiplier);
+
+            INPUT input = new INPUT();
+            input.type = InputType.MOUSE;
+            input.U.mi.mouseData = 0;
+            input.U.mi.time = 0;
+
+            input.U.mi.dwFlags = MOUSEEVENTF.MOVE;
+
+            input.U.mi.dx = x;
+            input.U.mi.dy = y;
+
+            INPUT[] send = { input };
+            SendInput(1, send, INPUT.Size);
+        }
+
+        public void newMoveNoScale(int x, int y)
+        {
+
+            x -= screenSize.X / 2;
+            y -= screenSize.Y / 2;
+
             INPUT input = new INPUT();
             input.type = InputType.MOUSE;
             input.U.mi.mouseData = 0;

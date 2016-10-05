@@ -43,6 +43,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.liveButton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.contantBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // captureButton
@@ -101,7 +102,7 @@
             // shootBox
             // 
             this.shootBox.AutoSize = true;
-            this.shootBox.Location = new System.Drawing.Point(12, 64);
+            this.shootBox.Location = new System.Drawing.Point(228, 145);
             this.shootBox.Name = "shootBox";
             this.shootBox.Size = new System.Drawing.Size(83, 17);
             this.shootBox.TabIndex = 7;
@@ -112,7 +113,7 @@
             // predictionBox
             // 
             this.predictionBox.AutoSize = true;
-            this.predictionBox.Location = new System.Drawing.Point(12, 87);
+            this.predictionBox.Location = new System.Drawing.Point(228, 168);
             this.predictionBox.Name = "predictionBox";
             this.predictionBox.Size = new System.Drawing.Size(103, 17);
             this.predictionBox.TabIndex = 8;
@@ -123,7 +124,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 40);
+            this.label1.Location = new System.Drawing.Point(228, 121);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 13);
             this.label1.TabIndex = 9;
@@ -184,7 +185,7 @@
             "MB1",
             "MB2",
             "MB3"});
-            this.aimBox.Location = new System.Drawing.Point(65, 37);
+            this.aimBox.Location = new System.Drawing.Point(281, 118);
             this.aimBox.Name = "aimBox";
             this.aimBox.Size = new System.Drawing.Size(50, 21);
             this.aimBox.TabIndex = 10;
@@ -237,11 +238,21 @@
             this.label4.Text = "---------------------------------------------------------------------------------" +
     "---------------------------------------";
             // 
+            // contantBox
+            // 
+            this.contantBox.Location = new System.Drawing.Point(91, 34);
+            this.contantBox.Name = "contantBox";
+            this.contantBox.Size = new System.Drawing.Size(100, 20);
+            this.contantBox.TabIndex = 17;
+            this.contantBox.Text = "0.116";
+            this.contantBox.TextChanged += new System.EventHandler(this.contantBox_TextChanged);
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(386, 328);
+            this.Controls.Add(this.contantBox);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.liveButton);
             this.Controls.Add(this.label3);
@@ -283,6 +294,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button liveButton;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox contantBox;
     }
 }
 
