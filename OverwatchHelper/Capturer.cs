@@ -66,13 +66,15 @@ namespace OverwatchHelper
                 //act in a new thread
                 try
                 {
+                    Stopwatch watch = new Stopwatch();
+                    watch.Restart();
                     if (fastMode)
                     {
                         act(CaptureScreen.GetDesktopImage(2));
                     }
                     else
                         act(CaptureScreen.GetDesktopImage());
-                    
+                    Console.WriteLine("act took this many ms:\t" + watch.ElapsedMilliseconds);
                 }
                 catch (Exception ex)
                 {
@@ -84,7 +86,8 @@ namespace OverwatchHelper
 
 
 
-        int debugCounter = 0;
+        public double travelTime = 1;//travel time of projectile in ms
+        public double safetyMargin = 1;//scaling factor for head movement
         private void act(Bitmap view)
         {
             //move recent screenshot to public view;
@@ -96,52 +99,75 @@ namespace OverwatchHelper
 
             if (predictionMode)
             {
-                //todo
+                int scale = (fastMode) ? 2 : 1;
+
+                //find head during the first moment:
+                Moment first = CaptureScreen.GetDesktopMoment(scale);
+                long firstTime = first.timestamp;
+                analyst.findSilhouettes(analyst.hsvFilter(new Image<Bgr, Byte>(first.image)));
+                Point firstTarget = analyst.findTarget(center);
+                if (firstTarget.X < 0 || firstTarget.Y < 0) return;
+                if (analyst.distance(firstTarget, center) > window) return;
+
+                //if that succeeded, find head during the second moment:
+                Moment second = CaptureScreen.GetDesktopMoment(scale);
+                long secondTime = second.timestamp;
+                analyst.findSilhouettes(analyst.hsvFilter(new Image<Bgr, Byte>(second.image)));
+                Point secondTarget = analyst.findTarget(center);
+                if (secondTarget.X < 0 || secondTarget.Y < 0) return;
+
+                //then extrapolate the position of the head during the current time
+                long currentTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+                double xDelta = (double)(secondTarget.X - firstTarget.X) / (double)(secondTime - firstTime);//x delta / ms
+                double yDelta = (double)(secondTarget.Y - firstTarget.Y) / (double)(secondTime - firstTime);//x delata / ms
+
+                xDelta *= safetyMargin;
+                yDelta *= safetyMargin;
+
+                double elapsedTime = travelTime + (currentTime - secondTime);
+                int newX = (int)((double)secondTarget.X + (xDelta * elapsedTime));
+                int newY = (int)((double)secondTarget.Y + (yDelta * elapsedTime));
+
+                mouseMover.newMove(newX, newY, killMode);//move to calculated position
+
             }
             else
             {
 
                 //builds List<Silhouette> of targets
                 analyst.findSilhouettes(analyst.hsvFilter(new Image<Bgr, Byte>(view))); 
-                try
+                Point target = analyst.findTarget(center);
+
+                if (target.X < 0 || target.Y < 0) return;
+                if (analyst.distance(target, center) > window) return;
+
+                //MessageBox.Show("moved to\t" + target.X + "\t" + target.Y);
+
+                if (fastMode)
                 {
-                    Point target = analyst.findTarget(center);
-
-                    if (target.X < 0 || target.Y < 0) return;
-                    if (analyst.distance(target, center) > window) return;
-
-                    //MessageBox.Show("moved to\t" + target.X + "\t" + target.Y);
-
-                    if (fastMode)
-                    {
-                        target.X += center.X / 2;
-                        target.Y += center.Y / 2;
-                    }
-                    if (honeMode)
-                    {
-                        mouseMover.newMove(target.X, target.Y, false);
-                        System.Threading.Thread.Sleep(25);
-                        Image<Bgr, Byte> subImage = new Image<Bgr, Byte>(CaptureScreen.GetDesktopImage(4));
-                        analyst.findSilhouettesWeak(analyst.hsvFilter(subImage));
-                        target = analyst.findTarget(center);
-                        target.X += center.X * 3 / 4;
-                        target.Y += center.Y * 3 / 4;
-                        //MessageBox.Show("wants to go to\t" + target.X + "\t" + target.Y);
-                        if (target.X < 0 || target.Y < 0)
-                            mouseMover.newMove(center.X, center.Y, killMode);//shoot in place if target isn't found again
-                        else
-                            mouseMover.newMove(target.X, target.Y, killMode);//otherwise hone in
-                    }
+                    target.X += center.X / 2;
+                    target.Y += center.Y / 2;
+                }
+                if (honeMode)
+                {
+                    mouseMover.newMove(target.X, target.Y, false);
+                    System.Threading.Thread.Sleep(25);
+                    Image<Bgr, Byte> subImage = new Image<Bgr, Byte>(CaptureScreen.GetDesktopImage(4));
+                    analyst.findSilhouettesWeak(analyst.hsvFilter(subImage));
+                    target = analyst.findTarget(center);
+                    target.X += center.X * 3 / 4;
+                    target.Y += center.Y * 3 / 4;
+                    //MessageBox.Show("wants to go to\t" + target.X + "\t" + target.Y);
+                    if (target.X < 0 || target.Y < 0)
+                        mouseMover.newMove(center.X, center.Y, killMode);//shoot in place if target isn't found again
                     else
-                    {
-                        mouseMover.newMove(target.X, target.Y, killMode);
-                    }
-                    
+                        mouseMover.newMove(target.X, target.Y, killMode);//otherwise hone in
                 }
-                catch (Exception ex)
+                else
                 {
-                    return;
+                    mouseMover.newMove(target.X, target.Y, killMode);
                 }
+                    
             }
 
         }

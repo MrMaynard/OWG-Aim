@@ -103,6 +103,7 @@
       <DependentUpon>GUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Hooker.cs" />
+    <Compile Include="Moment.cs" />
     <Compile Include="MouseMover.cs" />
     <Compile Include="NoTargetException.cs" />
     <Compile Include="Program.cs" />
