@@ -16,7 +16,7 @@ namespace OverwatchHelper
     {
 
         //hsv filter values:
-        public int hueMin = 2;
+        public int hueMin = 1;
         public int hueMax = 6;
         public int satMin = 165;
         public int satMax = 256;
@@ -31,9 +31,17 @@ namespace OverwatchHelper
 
         //holder for silhouettes:
         public List<Silhouette> silhouettes = new List<Silhouette>();
-        public int minPixels = 10;
-        public float minLinearness = .5f;
-        public float minGappiness = 1.2f;
+
+        //cutoffs:
+        public int minPixels = 150;//120
+        public float minLinearness = .5f;//.5
+        public float minGappiness = 1f;
+
+        public int minPixelsEasy = 50;//120
+        public float minLinearnessEasy = .5f;//.5
+        public float minGappinessEasy = 1f;
+
+        //offset amount for the target from border, set elsewhere
         public int headOffset = 0;
 
         public Image<Gray, Byte> hsvFilter(Image<Bgr, Byte> input){
@@ -41,7 +49,8 @@ namespace OverwatchHelper
             Image<Gray, Byte>[] results = new Image<Gray, Byte>[3];
             Image<Gray, Byte>[] channels = input.Convert<Hsv, Byte>().Split();
 
-            results[0] = channels[0].InRange(new Gray(hueMin), new Gray(hueMax));
+            results[0] =
+                channels[0].InRange(new Gray(hueMin), new Gray(hueMax));
             results[1] = channels[1].InRange(new Gray(satMin), new Gray(satMax));
             results[2] = channels[2].InRange(new Gray(valMin), new Gray(valMax));
 
@@ -85,9 +94,8 @@ namespace OverwatchHelper
                 Silhouette temp = new Silhouette(input.Copy(filter), 0);
                 temp.compute();
                 if (temp.count < minPixels) continue;
-                temp.linearness /= temp.count;
                 if (temp.linearness < minLinearness) continue;
-                if (temp.gappiness / temp.count < minGappiness) continue;
+                if (temp.gappiness < minGappiness) continue;
 
                 var moment = CvInvoke.Moments(contours[i], true);
                 temp.centroid.X = (int)(moment.M10 / moment.M00);
@@ -126,6 +134,48 @@ namespace OverwatchHelper
             this.silhouettes = silhouettes;
         }
 
+
+        public void findSilhouettesWeak(Image<Gray, Byte> input)
+        {
+
+            Image<Gray, Byte> fatInput = morphologicalOperations(input);
+            List<Silhouette> silhouettes = new List<Silhouette>();
+            numTargets = 0;
+
+            var inputSize = input.Size;
+
+            //contours method:
+            Image<Gray, Byte> filter = new Image<Gray, byte>(inputSize);
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            CvInvoke.FindContours(fatInput, contours, null, Emgu.CV.CvEnum.RetrType.List, Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxNone);
+            for (int i = 0; i < contours.Size; i++)
+            {
+
+                double a = CvInvoke.ContourArea(contours[i]);  //  Find the area of contour
+                if (a < minPixels) continue;
+
+                MCvScalar white = new MCvScalar(255, 255, 255);
+                filter = new Image<Gray, Byte>(inputSize);
+                CvInvoke.DrawContours(filter, contours, i, white, -1);
+                Silhouette temp = new Silhouette(input.Copy(filter), 0);
+                temp.compute();
+
+                //these lines are diffrent in easy mode:
+                if (temp.count < minPixels) continue;
+                if (temp.linearness < minLinearness) continue;
+                if (temp.gappiness < minGappiness) continue;
+
+                var moment = CvInvoke.Moments(contours[i], true);
+                temp.centroid.X = (int)(moment.M10 / moment.M00);
+                temp.centroid.Y = (int)(moment.M01 / moment.M00);
+                temp.centroid = temp.findTop();
+                silhouettes.Add(temp);
+                numTargets++;
+            }
+
+            //move local variable to global:
+            this.silhouettes = silhouettes;
+        }
         //private void crawlFrom(int i, int j)
         //{
         //    outputData[i, j, 0] = 255;//else add pixel to output

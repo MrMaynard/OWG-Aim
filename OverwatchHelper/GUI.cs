@@ -104,7 +104,7 @@ namespace OverwatchHelper
         {
             analyst = new Analyst();
             mover = new MouseMover(screenSize, 8.0f);
-            capturer = new Capturer(analyst, mover, screenSize, 500.0, path, 30);
+            capturer = new Capturer(analyst, mover, screenSize, 1200.0, path, 15);
             hooker = new Hooker(capturer, Keys.C);
 
             captureThread = new Thread(() => { capturer.run(); }, 1000000000);
@@ -118,7 +118,7 @@ namespace OverwatchHelper
         {
             captureThread.Start();
             hookerThread.Start();
-            contantBox.Text = "0.085";//debug
+            contantBox.Text = "0.093";
         }
 
         private void captureButton_Click(object sender, EventArgs e)
@@ -138,13 +138,16 @@ namespace OverwatchHelper
 
         private void debugButton_Click(object sender, EventArgs e)
         {
-            
+            //Image<Bgr, Byte> test = new Image<Bgr, Byte>(CaptureScreen.GetDesktopImage(2));
+            //CvInvoke.Imshow("test", test);
+            //CvInvoke.WaitKey(0);
+            //return;
             //interesting files: 31 57 58 60 62
-            string debugpath = "C:\\Users\\Eric\\Desktop\\overwatch\\images\\testrun0\\56.bmp";
+            string debugpath = "C:\\Users\\Eric\\Desktop\\overwatch\\4.bmp";
             //var debug =
-               analyst.findSilhouettes(
+               analyst.findSilhouettesWeak(
                     analyst.hsvFilter(
-                    new Image<Bgr, Byte>(debugpath)
+                    new Image<Bgr, Byte>(CaptureScreen.GetDesktopImage(4))
                     )
                     )
                     ;
@@ -166,7 +169,9 @@ namespace OverwatchHelper
                         result[s.centroid.Y, s.centroid.X - 1] = marker;
 
                     }
-                    CvInvoke.Imshow("Stats (C, L, G):\t" + s.count + ",\t" + s.linearness + ",\t" + s.gappiness / s.count, result);
+                    CvInvoke.Imshow("Stats (C, L, G):\t" + s.count + ",\t" + s.linearness + ",\t" + s.gappiness, result);
+                    //CvInvoke.Imshow("head:\t" + s.centroid.X + ",\t" + s.centroid.Y, result);
+
                     CvInvoke.WaitKey(0);
 
                 });
@@ -280,6 +285,16 @@ namespace OverwatchHelper
             {
 
             }
+        }
+
+        private void fastBox_CheckedChanged(object sender, EventArgs e)
+        {
+            capturer.fastMode = fastBox.Checked;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            capturer.honeMode = checkBox1.Checked;
         }
     }
 }

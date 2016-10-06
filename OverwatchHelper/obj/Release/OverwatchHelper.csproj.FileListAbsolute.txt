@@ -25,3 +25,6 @@ C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHel
 C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHelper\obj\Release\OverwatchHelper.exe
 C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHelper\obj\Release\OverwatchHelper.pdb
 C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHelper\obj\Release\OverwatchHelper.csprojResolveAssemblyReference.cache
+C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHelper\bin\Release\msvcp120.dll
+C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHelper\bin\Release\msvcr120.dll
+C:\Users\Eric\Documents\Visual Studio 2013\Projects\OverwatchHelper\OverwatchHelper\bin\Release\opencv_ffmpeg310.dll

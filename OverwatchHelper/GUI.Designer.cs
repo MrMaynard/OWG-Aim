@@ -44,6 +44,8 @@
             this.liveButton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.contantBox = new System.Windows.Forms.TextBox();
+            this.fastBox = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // captureButton
@@ -124,7 +126,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(228, 121);
+            this.label1.Location = new System.Drawing.Point(225, 63);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 13);
             this.label1.TabIndex = 9;
@@ -185,7 +187,7 @@
             "MB1",
             "MB2",
             "MB3"});
-            this.aimBox.Location = new System.Drawing.Point(281, 118);
+            this.aimBox.Location = new System.Drawing.Point(278, 60);
             this.aimBox.Name = "aimBox";
             this.aimBox.Size = new System.Drawing.Size(50, 21);
             this.aimBox.TabIndex = 10;
@@ -197,7 +199,7 @@
             this.windowBox.Name = "windowBox";
             this.windowBox.Size = new System.Drawing.Size(100, 20);
             this.windowBox.TabIndex = 12;
-            this.windowBox.Text = "500";
+            this.windowBox.Text = "1200";
             this.windowBox.TextChanged += new System.EventHandler(this.windowBox_TextChanged);
             // 
             // label2
@@ -247,11 +249,35 @@
             this.contantBox.Text = "0.116";
             this.contantBox.TextChanged += new System.EventHandler(this.contantBox_TextChanged);
             // 
+            // fastBox
+            // 
+            this.fastBox.AutoSize = true;
+            this.fastBox.Location = new System.Drawing.Point(228, 87);
+            this.fastBox.Name = "fastBox";
+            this.fastBox.Size = new System.Drawing.Size(75, 17);
+            this.fastBox.TabIndex = 18;
+            this.fastBox.Text = "Fast mode";
+            this.fastBox.UseVisualStyleBackColor = true;
+            this.fastBox.CheckedChanged += new System.EventHandler(this.fastBox_CheckedChanged);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(228, 122);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(81, 17);
+            this.checkBox1.TabIndex = 19;
+            this.checkBox1.Text = "Hone mode";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(386, 328);
+            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.fastBox);
             this.Controls.Add(this.contantBox);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.liveButton);
@@ -295,6 +321,8 @@
         private System.Windows.Forms.Button liveButton;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox contantBox;
+        private System.Windows.Forms.CheckBox fastBox;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

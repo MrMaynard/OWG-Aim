@@ -992,7 +992,7 @@ namespace OverwatchHelper
         //end of pinvoke nightmare
 
         public float sensitivityMultiplier;
-        public float constant = 0.085f;
+        public float constant = 0.09f;
         public float sensitivity = 8f;
 
         //constructor needs screen size
@@ -1070,9 +1070,24 @@ namespace OverwatchHelper
             x -= screenSize.X / 2;
             y -= screenSize.Y / 2;
 
+            x += random.Next(-1, 1);
+            y += random.Next(-3, 1);
+
             x = (int)((float)x / sensitivityMultiplier);
             y = (int)((float)y / sensitivityMultiplier);
 
+            int xOff = random.Next(-10, 10);
+            int yOff = random.Next(-10, 10);
+            int xHalf = x / 2;
+            int yHalf = y / 2;
+
+            sendMove(xHalf + xOff, yHalf + yOff);
+            System.Threading.Thread.Sleep(random.Next(2, 8));
+            sendMove(xHalf - xOff, yHalf - yOff);
+        }
+
+        private void sendMove(int x, int y)
+        {
             INPUT input = new INPUT();
             input.type = InputType.MOUSE;
             input.U.mi.mouseData = 0;
@@ -1086,6 +1101,37 @@ namespace OverwatchHelper
             INPUT[] send = { input };
             SendInput(1, send, INPUT.Size);
         }
+
+        public void newMove(int x, int y, bool shoot)
+        {
+            if (!shoot)
+            {
+                newMove(x, y);
+                return;
+            }
+
+            x -= screenSize.X / 2;
+            y -= screenSize.Y / 2;
+
+            x += random.Next(-1, 1);
+            y += random.Next(-3, 0);
+
+            x = (int)((float)x / sensitivityMultiplier);
+            y = (int)((float)y / sensitivityMultiplier);
+
+            int xHalf = x / 2;
+            int yHalf = y / 2;
+
+            int xOff = random.Next(-10, 10);
+            int yOff = random.Next(-10, 10);
+
+            sendMove(xHalf + xOff, yHalf + yOff);
+            System.Threading.Thread.Sleep(random.Next(2, 8));
+
+            mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, xHalf - xOff, yHalf - yOff, 0, 0);
+            //System.Threading.Thread.Sleep(random.Next(5,10));
+        }
+
 
         public void newMoveNoScale(int x, int y)
         {

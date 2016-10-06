@@ -23,9 +23,6 @@ namespace OverwatchHelper
 
         //bounds:
         public Point top = new Point(Int32.MaxValue, Int32.MaxValue);
-        public Point bottom;
-        public Point left;
-        public Point right;
 
         public Point centroid = new Point(0, 0);
 
@@ -44,13 +41,16 @@ namespace OverwatchHelper
             for (int j = image.Cols - 1; j >= 0; j--)
             {
                 hitred = false;
-                float temp = 0;
+                short gapsize = 1;
+                short holder = 0;
+                short tempCount = 0;
+                short temp = 0;
                 for (int i = image.Rows - 1; i >= 0; i--)
                 {
                     if (data[i, j, 0] == 255)
                     {
-
-                        count++;//count white pixels
+                        gapsize = 1;
+                        tempCount++;//count white pixels
 
                         //linearness goes up for each black/white border:
                         if (i + 1 < height) if (data[i + 1, j, 0] == 0) linearness++;
@@ -59,7 +59,7 @@ namespace OverwatchHelper
                         if (j - 1 >= 0)     if (data[i, j - 1, 0] == 0) linearness++;
 
                         hitred = true;//flag to know we are in a gap on black pixels
-                        gappiness += temp;
+                        holder += temp;
                         temp = 0;
 
                         if (i < top.Y)
@@ -68,9 +68,14 @@ namespace OverwatchHelper
                         }
 
                     }
-                    else if (hitred) temp++;//use black pixels to compute gappiness
+                    else if (hitred) temp += gapsize++;//use black pixels to compute gappiness
                 }
+                if (tempCount == 0) continue;
+                count += tempCount;
+                gappiness += holder / tempCount;
             }
+            linearness /= count;
+            gappiness /= count;
         }
 
         //centroid method
