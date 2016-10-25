@@ -242,7 +242,7 @@
             // 
             // contantBox
             // 
-            this.contantBox.Location = new System.Drawing.Point(91, 34);
+            this.contantBox.Location = new System.Drawing.Point(12, 12);
             this.contantBox.Name = "contantBox";
             this.contantBox.Size = new System.Drawing.Size(100, 20);
             this.contantBox.TabIndex = 17;
@@ -252,7 +252,7 @@
             // fastBox
             // 
             this.fastBox.AutoSize = true;
-            this.fastBox.Location = new System.Drawing.Point(228, 87);
+            this.fastBox.Location = new System.Drawing.Point(228, 99);
             this.fastBox.Name = "fastBox";
             this.fastBox.Size = new System.Drawing.Size(75, 17);
             this.fastBox.TabIndex = 18;
