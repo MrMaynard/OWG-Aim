@@ -1070,8 +1070,8 @@ namespace OverwatchHelper
             x -= screenSize.X / 2;
             y -= screenSize.Y / 2;
 
-            x += random.Next(-1, 1);
-            y += random.Next(-3, 1);
+            x += random.Next(0, 4);
+            y += random.Next(0, 4);
 
             x = (int)((float)x / sensitivityMultiplier);
             y = (int)((float)y / sensitivityMultiplier);
@@ -1084,6 +1084,18 @@ namespace OverwatchHelper
             sendMove(xHalf + xOff, yHalf + yOff);
             System.Threading.Thread.Sleep(random.Next(2, 8));
             sendMove(xHalf - xOff, yHalf - yOff);
+        }
+
+        public void newMoveFast(int x, int y)
+        {
+
+            x -= screenSize.X / 2;
+            y -= screenSize.Y / 2;
+
+            x = (int)((float)x / sensitivityMultiplier);
+            y = (int)((float)y / sensitivityMultiplier);
+
+            sendMove(x, y);
         }
 
         private void sendMove(int x, int y)

@@ -143,11 +143,11 @@ namespace OverwatchHelper
             //CvInvoke.WaitKey(0);
             //return;
             //interesting files: 31 57 58 60 62
-            string debugpath = "C:\\Users\\Eric\\Desktop\\overwatch\\4.bmp";
+            string debugpath = "C:\\Users\\Eric\\Desktop\\overwatch\\images\\templeofanubis\\78.bmp";
             //var debug =
                analyst.findSilhouettesWeak(
                     analyst.hsvFilter(
-                    new Image<Bgr, Byte>(CaptureScreen.GetDesktopImage(4))
+                    new Image<Bgr, Byte>(debugpath)
                     )
                     )
                     ;
@@ -156,6 +156,7 @@ namespace OverwatchHelper
                 //return;
                 analyst.silhouettes.ForEach(s =>
                 {
+                    
                     Image<Bgr, Byte> result = s.image.Convert<Bgr, Byte>();
                     var marker = new Bgr(0, 0, 255);
                     s.centroid.Y += 4;
@@ -252,17 +253,32 @@ namespace OverwatchHelper
             }
         }
 
+        int imageNumber = 0;
         private void liveButton_Click(object sender, EventArgs e)
         {
-            if (capturer.live)
+
+            //debug:
+            Thread captureThread = new Thread(() =>
             {
-                liveButton.Text = "Start capturing";
-            }
-            else
-            {
-                liveButton.Text = "Stop capturing";
-            }
-            capturer.live = !capturer.live;
+                while (true)
+                {
+                    Bitmap bmp = CaptureScreen.GetDesktopImage();
+                    bmp.Save("C:\\Users\\Eric\\Desktop\\overwatch\\images\\kaizen\\" + (imageNumber++) + ".bmp");
+                    System.Threading.Thread.Sleep(1000);
+                }
+            });
+            captureThread.Start();
+
+            //if (capturer.live)
+            //{
+            //    liveButton.Text = "Start capturing";
+            //}
+            //else
+            //{
+                liveButton.Text = "Now Capturing";
+                liveButton.Enabled = false;
+            //}
+            //capturer.live = !capturer.live;
         }
 
         private void GUI_Closing(object sender, FormClosingEventArgs e)

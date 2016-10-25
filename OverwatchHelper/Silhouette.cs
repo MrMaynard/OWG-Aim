@@ -82,20 +82,45 @@ namespace OverwatchHelper
         public Point findTop(bool c)
         {
             var data = this.image.Data;
-            Point top = new Point(-1, -1);
             for (int j = centroid.X; j >= 0; j--)
             {
                 for (int i = centroid.Y; i >= 0; i--)
                 {
                     if (data[i, j, 0] != 0)//if this is a white pixel set it to centroid
                     {
-                        top = new Point(j, i);
+                        //non-normalized:
+                        //return new Point(j, i);
+                        //normalized logic below:
+
+                        for(int temp = 0; temp < 20; temp++){
+                            if(data[i, j, 0] != 0)
+                                i++;//go back down so you hit a black again
+                            else 
+                                break;
+                        }
+
+                        int min = j;//farthest left point
+                        int goodDown = 0;
+                        int down;
+                        for (down = 0; down < 2 && i + down > image.Rows; down++)//go as low as you can
+                        {
+                            while (data[i + down, j, 0] == 0){//go all the way to the left in the black
+                                if (data[i, j, 0] == 0)
+                                    if (j < min)
+                                    {
+                                        goodDown = down;
+                                        min = j;
+                                    }
+                                j--;
+                                if(j < 0) break;
+                            }
+                        }
+                        return new Point(min, i + goodDown);
                     }
                 }
-                if (top.X != -1) 
-                    return top;
             }
-            return top;
+            Console.WriteLine("head logic completely failed!");
+            return new Point(Int32.MinValue, Int32.MinValue);
         }
 
         //top method

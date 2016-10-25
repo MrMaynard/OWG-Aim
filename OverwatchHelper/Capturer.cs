@@ -113,7 +113,7 @@ namespace OverwatchHelper
                 Moment second = CaptureScreen.GetDesktopMoment(scale);
                 long secondTime = second.timestamp;
                 analyst.findSilhouettes(analyst.hsvFilter(new Image<Bgr, Byte>(second.image)));
-                Point secondTarget = analyst.findTarget(center);
+                Point secondTarget = analyst.findTarget(firstTarget);
                 if (secondTarget.X < 0 || secondTarget.Y < 0) return;
 
                 //then extrapolate the position of the head during the current time
@@ -127,6 +127,12 @@ namespace OverwatchHelper
                 double elapsedTime = travelTime + (currentTime - secondTime);
                 int newX = (int)((double)secondTarget.X + (xDelta * elapsedTime));
                 int newY = (int)((double)secondTarget.Y + (yDelta * elapsedTime));
+
+                if (fastMode)
+                {
+                    newX += center.X / 2;
+                    newY += center.Y / 2;
+                }
 
                 mouseMover.newMove(newX, newY, killMode);//move to calculated position
 
@@ -150,16 +156,18 @@ namespace OverwatchHelper
                 }
                 if (honeMode)
                 {
-                    mouseMover.newMove(target.X, target.Y, false);
-                    System.Threading.Thread.Sleep(25);
+                    mouseMover.newMoveFast(target.X, target.Y);
+                    System.Threading.Thread.Sleep(30);
                     Image<Bgr, Byte> subImage = new Image<Bgr, Byte>(CaptureScreen.GetDesktopImage(4));
                     analyst.findSilhouettesWeak(analyst.hsvFilter(subImage));
                     target = analyst.findTarget(center);
                     target.X += center.X * 3 / 4;
                     target.Y += center.Y * 3 / 4;
                     //MessageBox.Show("wants to go to\t" + target.X + "\t" + target.Y);
-                    if (target.X < 0 || target.Y < 0)
+                    if (target.X < 0 || target.Y < 0){
+                        //Console.WriteLine("hone failed");
                         mouseMover.newMove(center.X, center.Y, killMode);//shoot in place if target isn't found again
+                    }  
                     else
                         mouseMover.newMove(target.X, target.Y, killMode);//otherwise hone in
                 }

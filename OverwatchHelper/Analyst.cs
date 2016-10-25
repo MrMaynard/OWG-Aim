@@ -168,7 +168,8 @@ namespace OverwatchHelper
                 var moment = CvInvoke.Moments(contours[i], true);
                 temp.centroid.X = (int)(moment.M10 / moment.M00);
                 temp.centroid.Y = (int)(moment.M01 / moment.M00);
-                temp.centroid = temp.findTop();
+                temp.centroid = temp.findTop(false);
+
                 silhouettes.Add(temp);
                 numTargets++;
             }

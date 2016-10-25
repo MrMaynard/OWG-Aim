@@ -226,7 +226,7 @@
             this.liveButton.Name = "liveButton";
             this.liveButton.Size = new System.Drawing.Size(362, 23);
             this.liveButton.TabIndex = 15;
-            this.liveButton.Text = "Stop capturing";
+            this.liveButton.Text = "Capture";
             this.liveButton.UseVisualStyleBackColor = true;
             this.liveButton.Click += new System.EventHandler(this.liveButton_Click);
             // 
